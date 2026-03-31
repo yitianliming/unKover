@@ -4,6 +4,7 @@
 EXTERN_C VOID KeInitializeAffinityEx(PKAFFINITY_EX affinity);
 EXTERN_C VOID KeAddProcessorAffinityEx(PKAFFINITY_EX affinity, INT num);
 EXTERN_C VOID HalSendNMI(PKAFFINITY_EX affinity);
+EXTERN_C PVOID RtlPcToFileHeader(PVOID PcValue, PVOID* BaseOfImage);
 
 ULONG g_numCores = 0;
 PVOID g_NmiCallbackHandle = NULL;
@@ -64,6 +65,37 @@ UkAnalyzeNmiData(
 
         LOG_DBG("NMI callback data: TID: %l\n", nmiContext.threadId);
 
+          ULONG tid = nmiContext.threadId;
+
+        if (1)
+        {
+            //
+      // 核心部分：遍历每个堆栈帧，打印调用地址和对应模块
+      //
+            for (auto i = 0; i < nmiContext.framesCaptured; ++i)
+            {
+                ULONG_PTR addr = (ULONG_PTR)(nmiContext.stackFrames[i]);
+                // 获取模块基址
+                PVOID imageBase = NULL;
+                if (RtlPcToFileHeader((PVOID)addr, &imageBase) == NULL)
+                {
+                    imageBase = NULL;
+                }
+                if (!imageBase) {
+                    LOG_DBG("NMI callback data:找到新线程[%d]: TID: %lu, 第堆栈: addr2:%llX，基址：%llX\n",
+                        i, tid, addr, imageBase);
+                }
+
+
+            }
+        
+          
+        }
+
+
+       
+
+        continue;
         if (nmiContext.threadId == 0)
         {
             continue;
