@@ -189,13 +189,15 @@ UkSendNMI(
             KeInitializeAffinityEx(g_NmiAffinity);
             KeAddProcessorAffinityEx(g_NmiAffinity, core);
 
-            LOG_DBG("Sending NMI to analyze thread running on core %d...\n", core);
+           // LOG_DBG("Sending NMI to analyze thread running on core %d...\n", core);
             HalSendNMI(g_NmiAffinity);
 
             //
             // Sleep for 1 seconds between each NMI to allow completion
             //
-            UkSleepMs(1000);
+            //UkSleepMs(1000);
+             UkSleepMs(10);
+
         }
 
         //
@@ -215,7 +217,9 @@ UkSendNMI(
         //
         UkAnalyzeNmiData();
 
-        UkSleepMs(5000);
+        //UkSleepMs(5000);
+                UkSleepMs(10);
+
 
     } while (g_sendNmis);
 
